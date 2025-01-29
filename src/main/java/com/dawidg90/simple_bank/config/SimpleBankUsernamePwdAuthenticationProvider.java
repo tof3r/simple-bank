@@ -13,7 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
-@Profile("!prod")
+@Profile("jwt")
 @RequiredArgsConstructor
 public class SimpleBankUsernamePwdAuthenticationProvider implements AuthenticationProvider {
     private final UserDetailsService userDetailsService;
@@ -24,7 +24,11 @@ public class SimpleBankUsernamePwdAuthenticationProvider implements Authenticati
         String username = authentication.getName();
         String pwd = authentication.getCredentials().toString();
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-        return new UsernamePasswordAuthenticationToken(username, pwd, userDetails.getAuthorities());
+        if (passwordEncoder.matches(pwd, userDetails.getPassword())) {
+            return new UsernamePasswordAuthenticationToken(username, pwd, userDetails.getAuthorities());
+        } else {
+            throw new BadCredentialsException("Invalid username or password");
+        }
     }
 
     @Override
