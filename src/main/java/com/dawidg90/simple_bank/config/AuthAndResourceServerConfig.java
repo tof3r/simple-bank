@@ -2,8 +2,6 @@ package com.dawidg90.simple_bank.config;
 
 import com.dawidg90.simple_bank.exceptionhandling.MyAccessDeniedHandler;
 import com.dawidg90.simple_bank.exceptionhandling.MyBasicAuthenticationEntryPoint;
-import com.dawidg90.simple_bank.filter.AuthoritiesLoggingAfterFilter;
-import com.dawidg90.simple_bank.filter.AuthoritiesLoggingAtFilter;
 import com.dawidg90.simple_bank.filter.CsrfCookieFilter;
 import com.dawidg90.simple_bank.filter.JwtGeneratorFilter;
 import com.dawidg90.simple_bank.filter.JwtValidatorFilter;
