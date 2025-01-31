@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-@Profile("jwt")
+@Profile("auth-and-resource-server")
 @RequiredArgsConstructor
 public class SimpleBankUserDetailsService implements UserDetailsService {
 

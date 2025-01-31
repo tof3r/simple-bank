@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@Profile("jwt")
+@Profile("auth-and-resource-server")
 @RestController
 @RequiredArgsConstructor
 public class BalanceController {

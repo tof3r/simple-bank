@@ -33,7 +33,7 @@ import static com.dawidg90.simple_bank.constants.ApplicationConstants.JWT_HEADER
 import static com.dawidg90.simple_bank.constants.ApplicationConstants.JWT_SECRET_DEFAULT;
 import static com.dawidg90.simple_bank.constants.ApplicationConstants.JWT_SECRET_KEY;
 
-@Profile("jwt")
+@Profile("auth-and-resource-server")
 @RestController
 @RequiredArgsConstructor
 public class UserController {

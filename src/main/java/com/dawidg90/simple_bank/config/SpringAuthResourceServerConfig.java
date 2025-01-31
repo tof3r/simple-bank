@@ -1,8 +1,7 @@
 package com.dawidg90.simple_bank.config;
 
 import com.dawidg90.simple_bank.exceptionhandling.MyAccessDeniedHandler;
-import com.dawidg90.simple_bank.filter.*;
-import org.springframework.beans.factory.annotation.Value;
+import com.dawidg90.simple_bank.filter.CsrfCookieFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -18,13 +17,13 @@ import org.springframework.web.cors.CorsConfiguration;
 import java.util.List;
 
 @Configuration
-@Profile("keycloak")
-public class ResourceServerConfig {
+@Profile("spring-auth-server")
+public class SpringAuthResourceServerConfig {
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
-        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(new KeyCloakRoleConverter());
+        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(new SpringAuthRoleConverter());
         CsrfTokenRequestAttributeHandler csrfTokenRequestAttributeHandler = new CsrfTokenRequestAttributeHandler();
 
         http.sessionManagement(smc -> smc.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

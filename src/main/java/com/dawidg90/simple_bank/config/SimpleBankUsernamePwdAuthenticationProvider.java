@@ -13,7 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
-@Profile("jwt")
+@Profile("auth-and-resource-server")
 @RequiredArgsConstructor
 public class SimpleBankUsernamePwdAuthenticationProvider implements AuthenticationProvider {
     private final UserDetailsService userDetailsService;

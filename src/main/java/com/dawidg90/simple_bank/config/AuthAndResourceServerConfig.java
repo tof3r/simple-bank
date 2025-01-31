@@ -8,6 +8,7 @@ import com.dawidg90.simple_bank.filter.CsrfCookieFilter;
 import com.dawidg90.simple_bank.filter.JwtGeneratorFilter;
 import com.dawidg90.simple_bank.filter.JwtValidatorFilter;
 import com.dawidg90.simple_bank.filter.RequestValidationBeforeFilter;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -25,13 +26,14 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 import java.util.List;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
-@Profile("jwt")
+@Profile("auth-and-resource-server")
 public class AuthAndResourceServerConfig {
 
     @Bean
@@ -57,23 +59,26 @@ public class AuthAndResourceServerConfig {
 //        http.requiresChannel(rcc -> rcc.anyRequest().requiresSecure());//only HTTPS
         http.requiresChannel(rcc -> rcc.anyRequest().requiresInsecure());//only HTTP
         http.exceptionHandling(ehc -> ehc.accessDeniedHandler(new MyAccessDeniedHandler()));
-        http.cors(corsConfig -> corsConfig.configurationSource(request -> {
-            CorsConfiguration corsConfiguration = new CorsConfiguration();
-            corsConfiguration.setAllowedOrigins(List.of("https://localhost:4200"));
-            corsConfiguration.setAllowedMethods(List.of("*"));
-            corsConfiguration.setAllowCredentials(true);
-            corsConfiguration.setAllowedHeaders(List.of("*"));
-            corsConfiguration.setExposedHeaders(List.of("Authorization"));
-            corsConfiguration.setMaxAge(3600L);
-            return corsConfiguration;
-        }));
+        http.cors(corsConfig -> {
+            corsConfig.configurationSource(new CorsConfigurationSource() {
+                @Override
+                public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
+                    CorsConfiguration corsConfiguration = new CorsConfiguration();
+                    corsConfiguration.setAllowedOrigins(List.of("http://localhost:4200"));
+                    corsConfiguration.setAllowedMethods(List.of("*"));
+                    corsConfiguration.setAllowCredentials(true);
+                    corsConfiguration.setAllowedHeaders(List.of("*"));
+                    corsConfiguration.setExposedHeaders(List.of("Authorization"));
+                    corsConfiguration.setMaxAge(3600L);
+                    return corsConfiguration;
+                }
+            });
+        });
         http.csrf(csrfConfig -> csrfConfig.csrfTokenRequestHandler(csrfTokenRequestAttributeHandler)
                         .ignoringRequestMatchers("/contact", "/register", "/apiLogin")
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
                 .addFilterBefore(new RequestValidationBeforeFilter(), BasicAuthenticationFilter.class)
-                .addFilterAfter(new AuthoritiesLoggingAfterFilter(), BasicAuthenticationFilter.class)
-                .addFilterAt(new AuthoritiesLoggingAtFilter(), BasicAuthenticationFilter.class)
                 .addFilterAfter(new JwtGeneratorFilter(), BasicAuthenticationFilter.class)
                 .addFilterBefore(new JwtValidatorFilter(), BasicAuthenticationFilter.class);
         return http.build();

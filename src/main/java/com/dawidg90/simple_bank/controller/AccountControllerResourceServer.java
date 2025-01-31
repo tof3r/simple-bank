@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
 
-@Profile("keycloak")
+@Profile({"keycloak-auth-server", "spring-auth-server"})
 @RestController
 @RequiredArgsConstructor
 public class AccountControllerResourceServer {
